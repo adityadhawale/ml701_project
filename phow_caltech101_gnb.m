@@ -204,7 +204,8 @@ end
 %                                                  Compute feature map
 % --------------------------------------------------------------------
 
-psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
+% psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
+psix = vl_homkermap(hists, 0, 'kchi2', 'gamma', .5) ;
 
 % --------------------------------------------------------------------
 %                                                            Train SVM
@@ -213,10 +214,9 @@ psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
 if ~exist(conf.modelPath) || conf.clobber || conf.clobber_model
   switch conf.svm.solver
     case 'gnb'
-%       y = 2 * (imageClass(selTrain) == ci) - 1 ;
-      Mdl = fitcnb(psix(:, selTrain)', imageClass(selTrain)', 'DistributionNames', 'mvmn')
-      w = 0
-      b = 0
+      Mdl = fitcnb(psix(:, selTrain)', imageClass(selTrain)', 'DistributionNames', 'normal')
+      b = 0;
+      w = 0;
     case {'sgd', 'sdca'}
       lambda = 1 / (conf.svm.C *  length(selTrain)) ;
       w = [] ;
@@ -243,6 +243,7 @@ if ~exist(conf.modelPath) || conf.clobber || conf.clobber_model
 
   model.b = conf.svm.biasMultiplier * b ;
   model.w = w ;
+  model.Mdl = Mdl;
 
   save(conf.modelPath, 'model') ;
 else
@@ -254,7 +255,8 @@ end
 % --------------------------------------------------------------------
 
 % Estimate the class of the test images
-scores = model.w' * psix + model.b' * ones(1,size(psix,2)) ;
+% scores = model.w' * psix + model.b' * ones(1,size(psix,2)) ;
+scores = predict(model.Mdl, psix(:, selTest)');
 [drop, imageEstClass] = max(scores, [], 1) ;
 
 % Compute the confusion matrix

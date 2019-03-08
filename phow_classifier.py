@@ -29,8 +29,8 @@ def main():
         labeled_data = get_labeled_data(args.prefix, hists=hist)
 
         # if(not hist):
-        labeled_data = remove_degenerate_features(
-            labeled_data, thresh=1e+2)
+        #labeled_data = remove_degenerate_features(
+        #    labeled_data, thresh=1e+2)
 
         if(args.classifier == "multi_nb"):
             non_negative = True
@@ -62,6 +62,8 @@ def main():
 
         # y_score = classifier_obj.classifier.decision_function(test_data['X'])
         # plot_precision_recall_curve(y_score, test_data['labels'])
+
+        plt.savefig(args.classifier + 'graph.png')
 
         plt.show()
 

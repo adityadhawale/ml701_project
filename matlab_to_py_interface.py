@@ -28,9 +28,11 @@ def split_data_into_test_and_training(data, batch_size=15):
     return training_data, test_data
 
 
-def get_labeled_data(path_prefix):
+def get_labeled_data(path_prefix, hists=False):
     label_file = path_prefix + "gt_labels.mat"
     data_file = path_prefix + "psix.mat"
+    if hists:
+        data_file = path_prefix + "hists.mat"
 
     training_data = dict()
     training_data['X'] = np.array(get_matlab_matrix(data_file), dtype=np.float)
@@ -49,3 +51,22 @@ def get_labeled_data(path_prefix):
         "Unequal number of data points and labels"
 
     return training_data
+
+
+def remove_degenerate_features(data):
+    subset_data = dict()
+    subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > 1e+1]
+    subset_data['labels'] = data['labels']
+    return subset_data
+
+
+def pre_condition_data(data, non_negative=False):
+    std_devs = np.std(data['X'], axis=0)
+    means = np.mean(data['X'], axis=0)
+    mean_centered = data['X'] - means
+    mean_centered /= std_devs
+
+    if non_negative:
+        mean_centered -= np.min(mean_centered, axis=0)
+    data['X'] = mean_centered
+    return data

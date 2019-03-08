@@ -53,9 +53,9 @@ def get_labeled_data(path_prefix, hists=False):
     return training_data
 
 
-def remove_degenerate_features(data):
+def remove_degenerate_features(data, thresh=1e1):
     subset_data = dict()
-    subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > 1e+1]
+    subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > thresh]
     subset_data['labels'] = data['labels']
     return subset_data
 

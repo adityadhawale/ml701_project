@@ -29,7 +29,8 @@ def main():
         labeled_data = get_labeled_data(args.prefix, hists=hist)
 
         # if(not hist):
-        #     labeled_data = remove_degenerate_features(labeled_data)
+        labeled_data = remove_degenerate_features(
+            labeled_data, thresh=1e+2)
 
         if(args.classifier == "multi_nb"):
             non_negative = True

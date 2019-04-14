@@ -69,6 +69,8 @@ def main():
         # y_score = classifier_obj.classifier.decision_function(test_data['X'])
         # plot_precision_recall_curve(y_score, test_data['labels'])
 
+        plt.savefig(args.classifier + 'graph.png')
+
         plt.show()
 
     else:

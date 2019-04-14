@@ -53,6 +53,36 @@ def get_labeled_data(path_prefix, hists=False):
     return training_data
 
 
+def split_training_into_train_and_cv(data, percentage_split=0.1):
+    training = dict()
+    cv = dict()
+
+    num_p_per_class = int(data['labels'].shape[0] / np.max(data['labels']))
+
+    for key, val in data.items():
+        training[key] = []
+        cv[key] = []
+
+    # for i in range(data['labels'].shape[0]):
+    #     class_id = i % num_p_per_class
+    for c in range(np.max(data['labels'])):
+        rand_indices = np.random.choice(num_p_per_class, 3, replace=False)
+        for i in range(num_p_per_class):
+            check = np.isin(i, rand_indices)
+            if (check):
+                for key, val in data.items():
+                    cv[key].append(data[key][c * num_p_per_class + i])
+            else:
+                for key, val in data.items():
+                    training[key].append(data[key][c * num_p_per_class + i])
+
+    for key, _ in data.items():
+        training[key] = np.array(training[key])
+        cv[key] = np.array(cv[key])
+
+    return training, cv
+
+
 def remove_degenerate_features(data, thresh=1e1):
     subset_data = dict()
     subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > thresh]

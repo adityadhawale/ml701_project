@@ -15,13 +15,18 @@ class Classifiers:
         if self.classifier_type == "logistic_regression":
             self.classifier = linear_model.LogisticRegression(
                 random_state=0,
-                solver='lbfgs', multi_class='multinomial')
+                solver='lbfgs', multi_class='multinomial', max_iter=1000)
 
         elif self.classifier_type == "gnb":
             self.classifier = naive_bayes.GaussianNB()
 
         elif self.classifier_type == "lin_svm":
-            self.classifier = svm.LinearSVC(random_state=0, tol=1e-5)
+            # self.classifier = svm.LinearSVR(
+            #     random_state=0, tol=1e-5, verbose=True)
+            # self.classifier = linear_model.SGDClassifier(
+            #     max_iter=1000, tol=1e-5, verbose=1)
+            self.classifier = svm.SVC(
+                kernel='linear', verbose=1, random_state=1)
 
         elif self.classifier_type == "multi_nb":
             self.classifier = naive_bayes.MultinomialNB()

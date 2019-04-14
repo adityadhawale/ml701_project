@@ -4,23 +4,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_curve
 from sklearn.utils.multiclass import unique_labels
+import matplotlib
+
+font = {'family': 'normal',
+        'size': 24}
+
+matplotlib.rc('font', **font)
 
 
-def plot_confusion_matrix(predicted_labels, true_labels):
+def plot_confusion_matrix(predicted_labels, true_labels, classifier, test_score):
     cm = confusion_matrix(true_labels, predicted_labels)
 
     fig, ax = plt.subplots(dpi=300)
     im = ax.imshow(cm, interpolation='nearest', cmap=plt.cm.jet)
-    ax.figure.colorbar(im, ax=ax)
+    plt.xticks([0, 101], [0, 101])
+    plt.yticks([0, 101], [0, 101])
+    # ax.figure.colorbar(im, ax=ax)
 
-    title = "Confusion Matrix"
-    ax.set(title=title, ylabel='True Label', xlabel="Predicted Label")
+    if(classifier == "multi_nb"):
+        title = "MNB Test Score: " + str(np.around(test_score, 5))
+    if(classifier == "gnb"):
+        title = "GNB Test Score: " + str(np.around(test_score, 5))
+    if(classifier == "logistic_regression"):
+        title = "LR Test Score: " + str(np.around(test_score, 5))
+    if(classifier == "lin_svm"):
+        title = "SVM Test Score: " + str(np.around(test_score, 5))
+    ax.set(title=title, xlabel="Predicted Label")
+    # ax.set(title=title, ylabel='True Label', xlabel="Predicted Label")
 
     # Loop over data dimensions and create text annotations.
     fmt = '.2f'
     thresh = cm.max() / 2.
 
-    fig.tight_layout()
+    # fig.tight_layout()
     return ax
 
 

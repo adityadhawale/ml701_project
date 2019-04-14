@@ -18,10 +18,11 @@ def main():
                         '3. lin_svm\n')
     parser.add_argument('--pre_trained', default=False, type=bool)
     parser.add_argument('--save_model', default=False, type=bool)
+    parser.add_argument('--use_psix', default=True, type=bool)
 
     args = parser.parse_args()
 
-    hist = False
+    hist = not args.use_psix
     non_negative = False
     if args.prefix and args.classifier:
         # if args.classifier == "gnb" or args.classifier == "multi_nb":
@@ -42,8 +43,8 @@ def main():
             split_data_into_test_and_training(
                 labeled_data)
 
-        test_data, cv_data = split_training_into_train_and_cv(
-            test_data, 0.1, random=False)
+        # test_data, cv_data = split_training_into_train_and_cv(
+            # test_data, 0.1, random=False)
 
         classifier_obj = Classifiers(args.classifier)
         if(args.pre_trained):

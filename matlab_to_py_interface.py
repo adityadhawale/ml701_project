@@ -53,7 +53,7 @@ def get_labeled_data(path_prefix, hists=False):
     return training_data
 
 
-def split_training_into_train_and_cv(data, percentage_split=0.1):
+def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
     training = dict()
     cv = dict()
 
@@ -63,10 +63,14 @@ def split_training_into_train_and_cv(data, percentage_split=0.1):
         training[key] = []
         cv[key] = []
 
-    # for i in range(data['labels'].shape[0]):
-    #     class_id = i % num_p_per_class
+    num_cv_per_class = int(np.ceil(num_p_per_class * percentage_split))
     for c in range(np.max(data['labels'])):
-        rand_indices = np.random.choice(num_p_per_class, 3, replace=False)
+        if(random):
+            rand_indices = np.random.choice(
+                num_p_per_class, num_cv_per_class, replace=False)
+        else:
+            rand_indices = np.arange(
+                int(np.floor((1. - percentage_split) * num_p_per_class)), num_p_per_class)
         for i in range(num_p_per_class):
             check = np.isin(i, rand_indices)
             if (check):

@@ -43,8 +43,7 @@ def main():
             split_data_into_test_and_training(
                 labeled_data)
 
-        # test_data, cv_data = split_training_into_train_and_cv(
-            # test_data, 0.1, random=False)
+        test_data, cv_data = split_training_into_train_and_cv(test_data, 0.1, random=False)
 
         classifier_obj = Classifiers(args.classifier)
         if(args.pre_trained):

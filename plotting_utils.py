@@ -27,6 +27,8 @@ def plot_confusion_matrix(predicted_labels, true_labels, classifier, test_score)
         title = "GNB Test Score: " + str(np.around(test_score, 5))
     if(classifier == "logistic_regression"):
         title = "LR Test Score: " + str(np.around(test_score, 5))
+    if(classifier == "knn"):
+        title = "KNN Test Score: " + str(np.around(test_score, 5))
     if(classifier == "lin_svm"):
         title = "SVM Test Score: " + str(np.around(test_score, 5))
     ax.set(title=title, xlabel="Predicted Label")

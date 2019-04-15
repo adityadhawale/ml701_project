@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from sklearn import linear_model, naive_bayes, svm
+from sklearn import linear_model, naive_bayes, svm, neighbors
 from joblib import dump, load
 
 
@@ -19,6 +19,11 @@ class Classifiers:
 
         elif self.classifier_type == "gnb":
             self.classifier = naive_bayes.GaussianNB()
+
+        elif self.classifier_type == "knn":
+            k = 7
+            nbrs = neighbors.KNeighborsClassifier(n_neighbors=k)
+            self.classifier = nbrs
 
         elif self.classifier_type == "lin_svm":
             # self.classifier = svm.LinearSVR(

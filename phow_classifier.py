@@ -6,6 +6,7 @@ import numpy as np
 from matlab_to_py_interface import *
 from classifiers import *
 from plotting_utils import *
+import json
 
 
 def main():
@@ -16,12 +17,14 @@ def main():
                         '1. gnb\n'
                         '2. multi_nb\n'
                         '3. lin_svm\n')
+    parser.add_argument('--classifier_args', help='arguments to the classifier in json')
     parser.add_argument('--pre_trained', default=False, type=bool)
     parser.add_argument('--save_model', default=False, type=bool)
     parser.add_argument('--use_psix', default=True, type=bool)
 
     args = parser.parse_args()
 
+    classifier_args = json.loads(args.classifier_args)
     hist = not args.use_psix
     non_negative = False
     if args.prefix and args.classifier:
@@ -46,10 +49,15 @@ def main():
         # test_data, cv_data = split_training_into_train_and_cv(
             # test_data, 0.1, random=False)
 
-        classifier_obj = Classifiers(args.classifier)
+        classifier_obj = Classifiers(args.classifier, classifier_args)
         if(args.pre_trained):
             classifier_obj.load_model(args.prefix)
         else:
+            # training_data = {
+            #     'X': training_data['X'][0:300],
+            #     'labels': training_data['labels'][0:300]
+            # }
+            # print(training_data.keys())
             classifier_obj.fit(training_data)
             if(args.save_model):
                 classifier_obj.save_model(args.prefix)

@@ -70,8 +70,8 @@ conf.svm.solver = 'sdca' ;
 conf.svm.biasMultiplier = 1 ;
 conf.phowOpts = {'Step', 3} ;
 conf.clobber = false ;
-conf.tinyProblem = true ;
-conf.prefix = 'baseline' ;
+conf.tinyProblem = false ;
+conf.prefix = 'default' ;
 conf.randSeed = 1 ;
 
 if conf.tinyProblem
@@ -122,15 +122,29 @@ classes = dir(conf.calDir) ;
 classes = classes([classes.isdir]) ;
 classes = {classes(3:conf.numClasses+2).name} ;
 
+% TODO add dopplegangers of different images to the general set
 images = {} ;
 imageClass = {} ;
 for ci = 1:length(classes)
   ims = dir(fullfile(conf.calDir, classes{ci}, '*.jpg'))' ;
   ims = vl_colsubset(ims, conf.numTrain + conf.numTest) ;
   ims = cellfun(@(x)fullfile(classes{ci},x),{ims.name},'UniformOutput',false) ;
+  
+% uncomment for all image transformations
+%   ims_new = ims;
+%   for k=1:length(ims)
+%     I = ims(k);
+%     I2 = flipdim(I ,2);           % Horizontal flip
+%     I3 = flipdim(I ,1);           % Vertical flip
+%     I4 = flipdim(I3,2);           % Both
+%     ims_transformed = {I2, I3, I4};
+%     ims_new = {ims_new{:}, ims_transformed{:}} ;
+%   end
+  
   images = {images{:}, ims{:}} ;
   imageClass{end+1} = ci * ones(1,length(ims)) ;
 end
+
 selTrain = find(mod(0:length(images)-1, conf.numTrain+conf.numTest) < conf.numTrain) ;
 selTest = setdiff(1:length(images), selTrain) ;
 imageClass = cat(2, imageClass{:}) ;
@@ -187,6 +201,7 @@ if ~exist(conf.histPath) || conf.clobber
   % for ii = 1:length(images)
     fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
     im = imread(fullfile(conf.calDir, images{ii})) ;
+    % TODO vary this
     hists{ii} = getImageDescriptor(model, im);
   end
 
@@ -280,9 +295,11 @@ function hist = getImageDescriptor(model, im)
 im = standarizeImage(im) ;
 width = size(im,2) ;
 height = size(im,1) ;
-numWords = size(model.vocab, 2) ;
+% Change the number of visual words
+numWords = size(model.vocab, 2);
 
 % get PHOW features
+% TODO vary the features it gets
 [frames, descrs] = vl_phow(im, model.phowOpts{:}) ;
 
 % quantize local descriptors into visual words
@@ -295,6 +312,7 @@ switch model.quantizer
                                   'MaxComparisons', 50)) ;
 end
 
+% TODO change tiling method
 for i = 1:length(model.numSpatialX)
   binsx = vl_binsearch(linspace(1,width,model.numSpatialX(i)+1), frames(1,:)) ;
   binsy = vl_binsearch(linspace(1,height,model.numSpatialY(i)+1), frames(2,:)) ;
@@ -308,6 +326,7 @@ for i = 1:length(model.numSpatialX)
 end
 hist = cat(1,hists{:}) ;
 hist = hist / sum(hist) ;
+% TODO nicer/different hist method
 
 % -------------------------------------------------------------------------
 function [className, score] = classify(model, im)

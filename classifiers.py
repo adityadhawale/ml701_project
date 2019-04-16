@@ -26,9 +26,9 @@ class Classifiers:
             self.classifier = nbrs
 
         elif self.classifier_type == "knn-manhat":
-            k = 1
+            k = 640
             manhat = neighbors.DistanceMetric.get_metric('manhattan')
-            nbrs = neighbors.KNeighborsClassifier(n_neighbors=k, metric=manhat)
+            nbrs = neighbors.KNeighborsClassifier(n_neighbors=k, metric='manhattan')
             self.classifier = nbrs
 
         elif self.classifier_type == "lin_svm":

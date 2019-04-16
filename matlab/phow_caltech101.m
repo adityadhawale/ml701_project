@@ -71,8 +71,7 @@ conf.svm.biasMultiplier = 1 ;
 conf.phowOpts = {'Step', 3} ;
 conf.clobber = false ;
 conf.tinyProblem = false ;
-
-conf.prefix = 'transformed_also_new' ;
+conf.prefix = 'baseline' ;
 conf.randSeed = 1 ;
 
 if conf.tinyProblem
@@ -125,19 +124,15 @@ classes = dir(conf.calDir) ;
 classes = classes([classes.isdir]) ;
 classes = {classes(3:conf.numClasses+2).name} ;
 
-% TODO add dopplegangers of different images to the general set
 images = {} ;
 imageClass = {} ;
-
 for ci = 1:length(classes)
   ims = dir(fullfile(conf.calDir, classes{ci}, '*.jpg'))' ;
   ims = vl_colsubset(ims, conf.numTrain + conf.numTest) ;
   ims = cellfun(@(x)fullfile(classes{ci},x),{ims.name},'UniformOutput',false) ;
   images = {images{:}, ims{:}} ;
-  imageClass{end+1} = ci * ones(1,length(ims) * 4) ;
+  imageClass{end+1} = ci * ones(1,length(ims)) ;
 end
- 
-
 selTrain = find(mod(0:length(images)-1, conf.numTrain+conf.numTest) < conf.numTrain) ;
 selTest = setdiff(1:length(images), selTrain) ;
 imageClass = cat(2, imageClass{:}) ;
@@ -189,25 +184,11 @@ end
 % --------------------------------------------------------------------
 
 if ~exist(conf.histPath) || conf.clobber
- 
-  new_images = {};
-  for ii = 1:length(images)
-  % for ii = 1:length(images)
-    fprintf('Loading %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
-    im = imread(fullfile(conf.calDir, images{ii})) ;
-    I = im;
-    I2 = flipdim(I ,2);           % Horizontal flip
-    I3 = flipdim(I ,1);           % Vertical flip
-    I4 = flipdim(I3,2);           % Both
-    ims_trans = {I, I2, I3, I4};
-    
-    new_images = {new_images{:}, ims_trans{:}} ;
-  end
-  
   hists = {} ;
-  parfor ii = 1:length(new_images)
-    fprintf('Processing %s (%.2f %%)\n', new_images{ii}, 100 * ii / length(new_images)) ;
-    im = new_images(ii)
+  parfor ii = 1:length(images)
+  % for ii = 1:length(images)
+    fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
+    im = imread(fullfile(conf.calDir, images{ii})) ;
     hists{ii} = getImageDescriptor(model, im);
   end
 
@@ -222,9 +203,6 @@ end
 % --------------------------------------------------------------------
 
 psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
-save(conf.psixPath, 'psix') ;
-save(conf.gtPath, 'imageClass') ;
-% save classes
 
 % --------------------------------------------------------------------
 %                                                            Train SVM
@@ -304,11 +282,9 @@ function hist = getImageDescriptor(model, im)
 im = standarizeImage(im) ;
 width = size(im,2) ;
 height = size(im,1) ;
-% Change the number of visual words
-numWords = size(model.vocab, 2);
+numWords = size(model.vocab, 2) ;
 
 % get PHOW features
-% TODO vary the features it gets
 [frames, descrs] = vl_phow(im, model.phowOpts{:}) ;
 
 % quantize local descriptors into visual words
@@ -321,7 +297,6 @@ switch model.quantizer
                                   'MaxComparisons', 50)) ;
 end
 
-% TODO change tiling method
 for i = 1:length(model.numSpatialX)
   binsx = vl_binsearch(linspace(1,width,model.numSpatialX(i)+1), frames(1,:)) ;
   binsy = vl_binsearch(linspace(1,height,model.numSpatialY(i)+1), frames(2,:)) ;
@@ -335,7 +310,6 @@ for i = 1:length(model.numSpatialX)
 end
 hist = cat(1,hists{:}) ;
 hist = hist / sum(hist) ;
-% TODO nicer/different hist method
 
 % -------------------------------------------------------------------------
 function [className, score] = classify(model, im)

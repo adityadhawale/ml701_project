@@ -54,9 +54,19 @@ def main():
                 classifier_obj.save_model(args.prefix)
 
         test_score = classifier_obj.get_score(test_data)
-        print("Training Score: {0}, Test Score: {1}".format(
-            classifier_obj.get_score(training_data),
-            test_score))
+        # print("Training Score: {0}, Test Score: {1}".format(
+        #     classifier_obj.get_score(training_data),
+        #     test_score))
+
+        test_score = classifier_obj.get_score(cv_data)
+        # print("Training Score: {0}, CV Test Score: {1}".format(
+        #     classifier_obj.get_score(training_data),
+        #     test_score))
+
+
+        print("train.append(" + str(classifier_obj.get_score(training_data)) + ")")
+        print("test.append(" + str(classifier_obj.get_score(test_data)) + ")")
+        print("cv.append(" + str(classifier_obj.get_score(cv_data)) + ")")
 
         # print("Training Score: {0}, Test Score: {1}".format(
         #     np.min(classifier_obj.classifier.predict_proba(training_data)),

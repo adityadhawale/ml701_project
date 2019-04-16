@@ -3,168 +3,169 @@ train = []
 test = []
 cv = []
 
-# nn.append(1.0)
-# train.append(1.0)
-# test.append(0.2081447963800905)
-# cv.append(0.22549019607843138)
-
-# nn.append(2.0)
-# train.append(0.6215686274509804)
-# test.append(0.18929110105580693)
-# cv.append(0.16666666666666666)
-
-# nn.append(3.0)
-# train.append(0.5006535947712418)
-# test.append(0.18778280542986425)
-# cv.append(0.19117647058823528)
-
-# nn.append(4.0)
-# train.append(0.47058823529411764)
-# test.append(0.19834087481146304)
-# cv.append(0.19117647058823528)
-
-# nn.append(5.0)
-# train.append(0.4418300653594771)
-# test.append(0.2171945701357466)
-# cv.append(0.20098039215686275)
-
-# nn.append(6.0)
-# train.append(0.4300653594771242)
-# test.append(0.21794871794871795)
-# cv.append(0.2107843137254902)
-
-# nn.append(7.0)
-# train.append(0.42549019607843136)
-# test.append(0.222473604826546)
-# cv.append(0.22058823529411764)
-
-# nn.append(8.0)
-# train.append(0.41830065359477125)
-# test.append(0.22624434389140272)
-# cv.append(0.23039215686274508)
-
-# nn.append(9.0)
-# train.append(0.40980392156862744)
-# test.append(0.23076923076923078)
-# cv.append(0.23039215686274508)
-
-# nn.append(10.0)
-# train.append(0.3954248366013072)
-# test.append(0.23001508295625941)
-# cv.append(0.22058823529411764)
-
-# nn.append(20.0)
-# train.append(0.3254901960784314)
-# test.append(0.21417797888386123)
-# cv.append(0.18627450980392157)
-
-# nn.append(40.0)
-# train.append(0.269281045751634)
-# test.append(0.19532428355957768)
-# cv.append(0.18627450980392157)
-
-# nn.append(80.0)
-# train.append(0.19607843137254902)
-# test.append(0.16440422322775264)
-# cv.append(0.14705882352941177)
-
-# nn.append(160.0)
-# train.append(0.13594771241830064)
-# test.append(0.12066365007541478)
-# cv.append(0.12745098039215685)
-
-# nn.append(320.0)
-# train.append(0.07908496732026143)
-# test.append(0.07767722473604827)
-# cv.append(0.08823529411764706)
-
-# nn.append(640.0)
-# train.append(0.030065359477124184)
-# test.append(0.026395173453996983)
-# cv.append(0.049019607843137254)
-
-# KNN MANHAT
-
+# KNN: Euclid, default
 nn.append(1.0)
 train.append(1.0)
-test.append(0.24358974358974358)
-cv.append(0.21568627450980393)
-
+test.append(0.2081447963800905)
+cv.append(0.22549019607843138)
 
 nn.append(2.0)
-train.append(0.6359477124183006)
-test.append(0.20361990950226244)
-cv.append(0.20588235294117646)
+train.append(0.6215686274509804)
+test.append(0.18929110105580693)
+cv.append(0.16666666666666666)
 
 nn.append(3.0)
-train.append(0.5183006535947713)
-test.append(0.20211161387631976)
-cv.append(0.2107843137254902)
+train.append(0.5006535947712418)
+test.append(0.18778280542986425)
+cv.append(0.19117647058823528)
 
 nn.append(4.0)
-train.append(0.46862745098039216)
+train.append(0.47058823529411764)
+test.append(0.19834087481146304)
+cv.append(0.19117647058823528)
+
+nn.append(5.0)
+train.append(0.4418300653594771)
 test.append(0.2171945701357466)
 cv.append(0.20098039215686275)
 
-nn.append(5.0)
-train.append(0.4392156862745098)
-test.append(0.21040723981900453)
-cv.append(0.20098039215686275)
-
 nn.append(6.0)
-train.append(0.4287581699346405)
-test.append(0.21342383107088989)
-cv.append(0.20098039215686275)
+train.append(0.4300653594771242)
+test.append(0.21794871794871795)
+cv.append(0.2107843137254902)
 
 nn.append(7.0)
-train.append(0.42091503267973857)
-test.append(0.22171945701357465)
-cv.append(0.19607843137254902)
+train.append(0.42549019607843136)
+test.append(0.222473604826546)
+cv.append(0.22058823529411764)
 
 nn.append(8.0)
-train.append(0.40326797385620916)
-test.append(0.222473604826546)
-cv.append(0.20098039215686275)
+train.append(0.41830065359477125)
+test.append(0.22624434389140272)
+cv.append(0.23039215686274508)
 
 nn.append(9.0)
-train.append(0.396078431372549)
-test.append(0.21945701357466063)
-cv.append(0.21568627450980393)
+train.append(0.40980392156862744)
+test.append(0.23076923076923078)
+cv.append(0.23039215686274508)
 
 nn.append(10.0)
-train.append(0.3895424836601307)
-test.append(0.2187028657616893)
+train.append(0.3954248366013072)
+test.append(0.23001508295625941)
 cv.append(0.22058823529411764)
 
 nn.append(20.0)
-train.append(0.3405228758169935)
-test.append(0.21342383107088989)
-cv.append(0.19117647058823528)
+train.append(0.3254901960784314)
+test.append(0.21417797888386123)
+cv.append(0.18627450980392157)
 
 nn.append(40.0)
-train.append(0.27647058823529413)
-test.append(0.19230769230769232)
-cv.append(0.19607843137254902)
+train.append(0.269281045751634)
+test.append(0.19532428355957768)
+cv.append(0.18627450980392157)
 
 nn.append(80.0)
-train.append(0.21437908496732025)
+train.append(0.19607843137254902)
 test.append(0.16440422322775264)
-cv.append(0.16666666666666666)
+cv.append(0.14705882352941177)
 
 nn.append(160.0)
-train.append(0.16732026143790849)
-test.append(0.13800904977375567)
-cv.append(0.12254901960784313)
+train.append(0.13594771241830064)
+test.append(0.12066365007541478)
+cv.append(0.12745098039215685)
 
 nn.append(320.0)
-train.append(0.12679738562091503)
-test.append(0.09502262443438914)
-cv.append(0.10294117647058823)
+train.append(0.07908496732026143)
+test.append(0.07767722473604827)
+cv.append(0.08823529411764706)
 
 nn.append(640.0)
 train.append(0.030065359477124184)
 test.append(0.026395173453996983)
 cv.append(0.049019607843137254)
+
+# KNN MANHAT
+
+# nn.append(1.0)
+# train.append(1.0)
+# test.append(0.24358974358974358)
+# cv.append(0.21568627450980393)
+
+
+# nn.append(2.0)
+# train.append(0.6359477124183006)
+# test.append(0.20361990950226244)
+# cv.append(0.20588235294117646)
+
+# nn.append(3.0)
+# train.append(0.5183006535947713)
+# test.append(0.20211161387631976)
+# cv.append(0.2107843137254902)
+
+# nn.append(4.0)
+# train.append(0.46862745098039216)
+# test.append(0.2171945701357466)
+# cv.append(0.20098039215686275)
+
+# nn.append(5.0)
+# train.append(0.4392156862745098)
+# test.append(0.21040723981900453)
+# cv.append(0.20098039215686275)
+
+# nn.append(6.0)
+# train.append(0.4287581699346405)
+# test.append(0.21342383107088989)
+# cv.append(0.20098039215686275)
+
+# nn.append(7.0)
+# train.append(0.42091503267973857)
+# test.append(0.22171945701357465)
+# cv.append(0.19607843137254902)
+
+# nn.append(8.0)
+# train.append(0.40326797385620916)
+# test.append(0.222473604826546)
+# cv.append(0.20098039215686275)
+
+# nn.append(9.0)
+# train.append(0.396078431372549)
+# test.append(0.21945701357466063)
+# cv.append(0.21568627450980393)
+
+# nn.append(10.0)
+# train.append(0.3895424836601307)
+# test.append(0.2187028657616893)
+# cv.append(0.22058823529411764)
+
+# nn.append(20.0)
+# train.append(0.3405228758169935)
+# test.append(0.21342383107088989)
+# cv.append(0.19117647058823528)
+
+# nn.append(40.0)
+# train.append(0.27647058823529413)
+# test.append(0.19230769230769232)
+# cv.append(0.19607843137254902)
+
+# nn.append(80.0)
+# train.append(0.21437908496732025)
+# test.append(0.16440422322775264)
+# cv.append(0.16666666666666666)
+
+# nn.append(160.0)
+# train.append(0.16732026143790849)
+# test.append(0.13800904977375567)
+# cv.append(0.12254901960784313)
+
+# nn.append(320.0)
+# train.append(0.12679738562091503)
+# test.append(0.09502262443438914)
+# cv.append(0.10294117647058823)
+
+# nn.append(640.0)
+# train.append(0.030065359477124184)
+# test.append(0.026395173453996983)
+# cv.append(0.049019607843137254)
 
 
 
@@ -198,13 +199,14 @@ plt.figure(dpi=200)
 plt.plot(xs, train, linewidth=3.0, label="Train Accuracy")
 #plt.plot(xs, test, linewidth=3.0, label="Test Accuracy")
 plt.plot(xs, cv, linewidth=3.0, label="CV Accuracy")
-plt.title(r"Effect of Num Neighbors on Accuracy: Manhattan Distance Metric")
+plt.title(r"Effect of Num Neighbors on Accuracy")
+#plt.title(r"Effect of Num Neighbors on Accuracy: Manhattan Distance Metric")
 plt.xlabel("Num Neighbors")
 plt.ylabel("Accuracy")
 
-plt.plot([8, 8], [0, max(train)], color="black", linewidth=.5)
+plt.plot([9, 9], [0, max(train)], color="black", linewidth=.5)
 
-plt.plot([8, 8], [0, max(train)], color="black", linewidth=.5)
+plt.plot([9, 9], [0, max(train)], color="black", linewidth=.5)
 # plt.ylim(0, 1.1)
 # plt.xlim(0, 10)
 sns.despine()
@@ -212,7 +214,7 @@ plt.legend()
 plt.subplots_adjust(left=0.2)
 
 # For normal
-plt.text(8+0.1, train[7]-0.01, s=str(np.round(train[7], 3)))
+plt.text(8+0.1, train[7]-0.01, s="  k = " + str(9), size="10")
 
 #For Manhattan
 #plt.text(8+0.1, train[9]-0.01, s=str(np.round(train[9], 3)))

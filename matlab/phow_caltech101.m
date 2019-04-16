@@ -72,7 +72,7 @@ conf.phowOpts = {'Step', 3} ;
 conf.clobber = false ;
 conf.tinyProblem = false ;
 
-conf.prefix = 'transformed_also' ;
+conf.prefix = 'transformed_also_new' ;
 conf.randSeed = 1 ;
 
 if conf.tinyProblem
@@ -133,18 +133,10 @@ for ci = 1:length(classes)
   ims = dir(fullfile(conf.calDir, classes{ci}, '*.jpg'))' ;
   ims = vl_colsubset(ims, conf.numTrain + conf.numTest) ;
   ims = cellfun(@(x)fullfile(classes{ci},x),{ims.name},'UniformOutput',false) ;
-  
-  % uncomment for all image transformations
-  ims_new = {};
-  I = ims;
-  I2 = flipdim(I ,2);           % Horizontal flip
-  I3 = flipdim(I ,1);           % Vertical flip
-  I4 = flipdim(I3,2);           % Both
-  ims_new = {I, I2, I3, I4};
-  
-  images = {images{:}, ims_new{:}} ;
-  imageClass{end+1} = ci * ones(1,length(ims_new)) ;
+  images = {images{:}, ims{:}} ;
+  imageClass{end+1} = ci * ones(1,length(ims) * 4) ;
 end
+ 
 
 selTrain = find(mod(0:length(images)-1, conf.numTrain+conf.numTest) < conf.numTrain) ;
 selTest = setdiff(1:length(images), selTrain) ;
@@ -197,12 +189,26 @@ end
 % --------------------------------------------------------------------
 
 if ~exist(conf.histPath) || conf.clobber
-  hists = {} ;
-  parfor ii = 1:length(images)
+ 
+  new_images = {};
+  for ii = 1:length(images)
   % for ii = 1:length(images)
     fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
     im = imread(fullfile(conf.calDir, images{ii})) ;
+    I = im;
+    I2 = flipdim(I ,2);           % Horizontal flip
+    I3 = flipdim(I ,1);           % Vertical flip
+    I4 = flipdim(I3,2);           % Both
+    ims_trans = {I, I2, I3, I4};
+    
+    new_images = {new_images{:}, ims_trans{:}} ;
+  end
+  
+  hists = {} ;
+  parfor ii = 1:length(new_images)
+  % for ii = 1:length(images)
     % TODO vary this
+    fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
     hists{ii} = getImageDescriptor(model, im);
   end
 

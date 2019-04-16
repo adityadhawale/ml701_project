@@ -128,21 +128,19 @@ classes = {classes(3:conf.numClasses+2).name} ;
 % TODO add dopplegangers of different images to the general set
 images = {} ;
 imageClass = {} ;
+
 for ci = 1:length(classes)
   ims = dir(fullfile(conf.calDir, classes{ci}, '*.jpg'))' ;
   ims = vl_colsubset(ims, conf.numTrain + conf.numTest) ;
   ims = cellfun(@(x)fullfile(classes{ci},x),{ims.name},'UniformOutput',false) ;
   
-% uncomment for all image transformations
+  % uncomment for all image transformations
   ims_new = {};
-  for k=1:length(ims)
-    I = ims(k);
-    I2 = flipdim(I ,2);           % Horizontal flip
-    I3 = flipdim(I ,1);           % Vertical flip
-    I4 = flipdim(I3,2);           % Both
-    ims_transformed = {I, I2, I3, I4};
-    ims_new = {ims_new{:}, ims_transformed{:}} ;
-  end
+  I = ims;
+  I2 = flipdim(I ,2);           % Horizontal flip
+  I3 = flipdim(I ,1);           % Vertical flip
+  I4 = flipdim(I3,2);           % Both
+  ims_new = {I, I2, I3, I4};
   
   images = {images{:}, ims_new{:}} ;
   imageClass{end+1} = ci * ones(1,length(ims_new)) ;

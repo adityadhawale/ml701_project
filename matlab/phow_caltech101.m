@@ -193,7 +193,7 @@ if ~exist(conf.histPath) || conf.clobber
   new_images = {};
   for ii = 1:length(images)
   % for ii = 1:length(images)
-    fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
+    fprintf('Loading %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
     im = imread(fullfile(conf.calDir, images{ii})) ;
     I = im;
     I2 = flipdim(I ,2);           % Horizontal flip
@@ -206,9 +206,8 @@ if ~exist(conf.histPath) || conf.clobber
   
   hists = {} ;
   parfor ii = 1:length(new_images)
-  % for ii = 1:length(images)
-    % TODO vary this
-    fprintf('Processing %s (%.2f %%)\n', images{ii}, 100 * ii / length(images)) ;
+    fprintf('Processing %s (%.2f %%)\n', new_images{ii}, 100 * ii / length(new_images)) ;
+    im = new_images(ii)
     hists{ii} = getImageDescriptor(model, im);
   end
 

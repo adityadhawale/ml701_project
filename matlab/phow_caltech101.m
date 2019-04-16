@@ -71,7 +71,8 @@ conf.svm.biasMultiplier = 1 ;
 conf.phowOpts = {'Step', 3} ;
 conf.clobber = false ;
 conf.tinyProblem = false ;
-conf.prefix = 'default' ;
+
+conf.prefix = 'transformed_also' ;
 conf.randSeed = 1 ;
 
 if conf.tinyProblem
@@ -87,6 +88,8 @@ conf.vocabPath = fullfile(conf.dataDir, [conf.prefix '-vocab.mat']) ;
 conf.histPath = fullfile(conf.dataDir, [conf.prefix '-hists.mat']) ;
 conf.modelPath = fullfile(conf.dataDir, [conf.prefix '-model.mat']) ;
 conf.resultPath = fullfile(conf.dataDir, [conf.prefix '-result']) ;
+conf.psixPath = fullfile(conf.dataDir, [conf.prefix '-psix.mat']) ;
+conf.gtPath = fullfile(conf.dataDir, [conf.prefix '-gt.mat']) ;
 
 randn('state',conf.randSeed) ;
 rand('state',conf.randSeed) ;
@@ -131,18 +134,18 @@ for ci = 1:length(classes)
   ims = cellfun(@(x)fullfile(classes{ci},x),{ims.name},'UniformOutput',false) ;
   
 % uncomment for all image transformations
-%   ims_new = ims;
-%   for k=1:length(ims)
-%     I = ims(k);
-%     I2 = flipdim(I ,2);           % Horizontal flip
-%     I3 = flipdim(I ,1);           % Vertical flip
-%     I4 = flipdim(I3,2);           % Both
-%     ims_transformed = {I2, I3, I4};
-%     ims_new = {ims_new{:}, ims_transformed{:}} ;
-%   end
+  ims_new = {};
+  for k=1:length(ims)
+    I = ims(k);
+    I2 = flipdim(I ,2);           % Horizontal flip
+    I3 = flipdim(I ,1);           % Vertical flip
+    I4 = flipdim(I3,2);           % Both
+    ims_transformed = {I, I2, I3, I4};
+    ims_new = {ims_new{:}, ims_transformed{:}} ;
+  end
   
-  images = {images{:}, ims{:}} ;
-  imageClass{end+1} = ci * ones(1,length(ims)) ;
+  images = {images{:}, ims_new{:}} ;
+  imageClass{end+1} = ci * ones(1,length(ims_new)) ;
 end
 
 selTrain = find(mod(0:length(images)-1, conf.numTrain+conf.numTest) < conf.numTrain) ;
@@ -216,6 +219,9 @@ end
 % --------------------------------------------------------------------
 
 psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
+save(conf.psixPath, 'psix') ;
+save(conf.gtPath, 'imageClass') ;
+% save classes
 
 % --------------------------------------------------------------------
 %                                                            Train SVM

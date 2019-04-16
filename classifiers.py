@@ -21,8 +21,14 @@ class Classifiers:
             self.classifier = naive_bayes.GaussianNB()
 
         elif self.classifier_type == "knn":
-            k = 7
+            k = 3
             nbrs = neighbors.KNeighborsClassifier(n_neighbors=k)
+            self.classifier = nbrs
+
+        elif self.classifier_type == "knn-manhat":
+            k = 1
+            manhat = neighbors.DistanceMetric.get_metric('manhattan')
+            nbrs = neighbors.KNeighborsClassifier(n_neighbors=k, metric=manhat)
             self.classifier = nbrs
 
         elif self.classifier_type == "lin_svm":

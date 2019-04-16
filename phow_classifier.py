@@ -29,10 +29,8 @@ def main():
     non_negative = False
     if args.prefix and args.classifier:
         # if args.classifier == "gnb" or args.classifier == "multi_nb":
-        hist = True
         labeled_data = get_labeled_data(args.prefix, hists=hist)
 
-        # if(not hist):
         labeled_data = remove_degenerate_features(
             labeled_data, thresh=1e0)
 
@@ -53,42 +51,32 @@ def main():
         if(args.pre_trained):
             classifier_obj.load_model(args.prefix)
         else:
-            if classifier_args is not None and classifier_args['regularization'] == "l1":
-                cs = l1_min_c(training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
-                coefs_ = []
-                train_scores = []
-                cv_scores = []
-                for c in cs:
-                    classifier_obj.set_params(c)
-                    start = time()
-                    classifier_obj.fit(training_data)
-
-                    train_score = classifier_obj.get_score(training_data)
-                    cv_score = classifier_obj.get_score(cv_data)
-                    print("Training Score: {0}, CV Score: {1}".format(
-                        train_score,
-                        cv_score))
-
-                    print("%f took %0.3fs" % (c, time() - start))
-                    coefs_.append(classifier_obj.get_coefs())
-                    train_scores.append(train_score)
-                    cv_scores.append(cv_score)
-
-                coefs_ = np.array(coefs_)
-                np.save("coefs_l1", coefs_)
-                np.save("train_l1", train_scores)
-                np.save("cv_l1", cv_scores)
-                # plt.plot(np.log10(cs), coefs_, marker='o')
-                # ymin, ymax = plt.ylim()
-                # plt.xlabel('log(C)')
-                # plt.ylabel('Coefficients')
-                # plt.title('Logistic Regression Path')
-                # plt.axis('tight')
-                # plt.show()
-            elif classifier_args is not None and classifier_args['regularization'] == "l2":
-                pass
-            else:
+            cs = l1_min_c(training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
+            np.save("cs_%s" % classifier_args['regularization'], cv_scores) 
+            coefs_ = []
+            train_scores = []
+            cv_scores = []
+            for c in cs:
+                classifier_obj.set_params(c)
+                start = time()
                 classifier_obj.fit(training_data)
+
+                train_score = classifier_obj.get_score(training_data)
+                cv_score = classifier_obj.get_score(cv_data)
+                print("Training Score: {0}, CV Score: {1}".format(
+                    train_score,
+                    cv_score))
+
+                print("%f took %0.3fs" % (c, time() - start))
+                coefs_.append(classifier_obj.get_coefs())
+                train_scores.append(train_score)
+                cv_scores.append(cv_score)
+
+            coefs_ = np.array(coefs_)
+            np.save("coefs_%s" % classifier_args['regularization'], coefs_)
+            np.save("train_%s" % classifier_args['regularization'], train_scores)
+            np.save("cv_%s" % classifier_args['regularization'], cv_scores)
+
 
             if(args.save_model):
                 classifier_obj.save_model(args.prefix)

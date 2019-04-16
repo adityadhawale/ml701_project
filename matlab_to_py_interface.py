@@ -2,6 +2,8 @@
 
 import numpy as np
 from scipy.io import loadmat
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 
 def get_matlab_matrix(filename):
@@ -89,8 +91,10 @@ def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
 
 def remove_degenerate_features(data, thresh=1e1):
     subset_data = dict()
+    print(data['X'].shape[1])
     subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > thresh]
     subset_data['labels'] = data['labels']
+    print(subset_data['X'].shape[1])
     return subset_data
 
 

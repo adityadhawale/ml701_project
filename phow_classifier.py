@@ -21,6 +21,8 @@ def main():
     parser.add_argument('--pre_trained', default=False, type=bool)
     parser.add_argument('--save_model', default=False, type=bool)
     parser.add_argument('--use_psix', default=True, type=bool)
+    parser.add_argument('--aug_all', default=False, type=bool)
+    parser.add_argument('--aug_class', default=-1, type=int)
 
     args = parser.parse_args()
 
@@ -29,7 +31,8 @@ def main():
     non_negative = False
     if args.prefix and args.classifier:
         # if args.classifier == "gnb" or args.classifier == "multi_nb":
-        labeled_data = get_labeled_data(args.prefix, hists=hist)
+        #pretty args
+        labeled_data = get_labeled_data(args.prefix, hist, args.aug_all, args.aug_class)
 
         labeled_data = remove_degenerate_features(
             labeled_data, thresh=1e0)
@@ -52,7 +55,7 @@ def main():
             classifier_obj.load_model(args.prefix)
         else:
             cs = l1_min_c(training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
-            np.save("cs_%s" % classifier_args['regularization'], cv_scores) 
+            #np.save("cs_%s" % classifier_args['regularization'], cv_scores) 
             coefs_ = []
             train_scores = []
             cv_scores = []

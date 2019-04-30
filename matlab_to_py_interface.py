@@ -61,7 +61,7 @@ def get_data_from_label(path_prefix, hists=False):
         data_file = path_prefix + "hists.mat"
 
     X = np.array(get_matlab_matrix(data_file), dtype=np.float)
-    labels = np.array(get_matlab_matrix(label_file), dtype=np.int64)
+    labels = np.array(get_matlab_matrix(label_file), dtype=np.int64).flatten()
 
     return X, labels
 
@@ -145,8 +145,12 @@ def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
 
 def remove_degenerate_features(data, thresh=1e1):
     subset_data = dict()
-    print(np.std(data['X'], axis=0))
+    # print(np.std(data['X'], axis=0))
+    prev_shape = data['X'].shape
     subset_data['X'] = data['X'][:, np.std(data['X'], axis=0) > thresh]
+    new_shape = subset_data['X'].shape
+
+    print("Went From: ", prev_shape, " -> ", new_shape)
     subset_data['labels'] = data['labels']
     return subset_data
 

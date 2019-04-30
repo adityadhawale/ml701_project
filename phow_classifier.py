@@ -17,7 +17,8 @@ def main():
                         '1. gnb\n'
                         '2. multi_nb\n'
                         '3. lin_svm\n')
-    parser.add_argument('--classifier_args', help='arguments to the classifier in json')
+    parser.add_argument('--classifier_args',
+                        help='arguments to the classifier in json')
     parser.add_argument('--pre_trained', default=False, type=bool)
     parser.add_argument('--save_model', default=False, type=bool)
     parser.add_argument('--use_psix', default=True, type=bool)
@@ -31,11 +32,12 @@ def main():
     non_negative = False
     if args.prefix and args.classifier:
         # if args.classifier == "gnb" or args.classifier == "multi_nb":
-        #pretty args
-        labeled_data = get_labeled_data(args.prefix, hist, args.aug_all, args.aug_class)
+        # pretty args
+        labeled_data = get_labeled_data(
+            args.prefix, hist, args.aug_all, args.aug_class)
 
         labeled_data = remove_degenerate_features(
-            labeled_data, thresh=1e0)
+            labeled_data, thresh=0.035)
 
         if(args.classifier == "multi_nb"):
             non_negative = True
@@ -54,8 +56,9 @@ def main():
         if(args.pre_trained):
             classifier_obj.load_model(args.prefix)
         else:
-            cs = l1_min_c(training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
-            #np.save("cs_%s" % classifier_args['regularization'], cv_scores) 
+            cs = l1_min_c(
+                training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
+            #np.save("cs_%s" % classifier_args['regularization'], cv_scores)
             coefs_ = []
             train_scores = []
             cv_scores = []
@@ -77,9 +80,9 @@ def main():
 
             coefs_ = np.array(coefs_)
             np.save("coefs_%s" % classifier_args['regularization'], coefs_)
-            np.save("train_%s" % classifier_args['regularization'], train_scores)
+            np.save("train_%s" %
+                    classifier_args['regularization'], train_scores)
             np.save("cv_%s" % classifier_args['regularization'], cv_scores)
-
 
             if(args.save_model):
                 classifier_obj.save_model(args.prefix)

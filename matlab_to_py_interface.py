@@ -71,7 +71,8 @@ def get_labeled_data(path_prefix, hists=False, aug_all=False, aug_class=-1):
     training_data = dict()
     X, labels = get_data_from_label(path_prefix, hists)
 
-    aug_list = ['logs/baseline-20-l-', 'logs/baseline-20-r-', 'logs/baseline-40-l-', 'logs/baseline-40-r-', 'logs/zoom-.5-', 'logs/zoom-1.5-', 'logs/zoom-2-']
+    aug_list = ['logs/baseline-20-l-', 'logs/baseline-20-r-', 'logs/baseline-40-l-',
+                'logs/baseline-40-r-', 'logs/zoom-.5-', 'logs/zoom-1.5-', 'logs/zoom-2-']
 
     if aug_all:
         for aug in aug_list:
@@ -79,11 +80,11 @@ def get_labeled_data(path_prefix, hists=False, aug_all=False, aug_class=-1):
             X = np.vstack((X, aug_X))
             labels = np.vstack((labels, aug_label))
             print(X.shape, labels.shape)
-            
+
     elif aug_class > -1:
         for aug in aug_list:
             aug_X, aug_label = get_data_from_label(aug)
-            
+
             for i in range(aug_label.shape[0]):
                 # if of target class, add its augmentations to the data set
                 if aug_label[i] is aug_class:
@@ -106,6 +107,7 @@ def get_labeled_data(path_prefix, hists=False, aug_all=False, aug_class=-1):
         "Unequal number of data points and labels"
 
     return training_data
+
 
 def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
     training = dict()
@@ -143,10 +145,9 @@ def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
 
 def remove_degenerate_features(data, thresh=1e1):
     subset_data = dict()
-    print(data['X'].shape[1])
-    subset_data['X'] = data['X'][:, np.sum(data['X'], axis=0) > thresh]
+    print(np.std(data['X'], axis=0))
+    subset_data['X'] = data['X'][:, np.std(data['X'], axis=0) > thresh]
     subset_data['labels'] = data['labels']
-    print(subset_data['X'].shape[1])
     return subset_data
 
 

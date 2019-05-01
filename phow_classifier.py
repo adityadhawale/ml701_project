@@ -10,9 +10,10 @@ import json
 import yaml
 
 
-def process_data(labeled_data, non_negative=False):
+def process_data(labeled_data, use_psix, non_negative=False):
+    thresh = 0.035 if use_psix else 0.0001
     labeled_data = remove_degenerate_features(
-        labeled_data, thresh=.075)
+        labeled_data, thresh=thresh)
     labeled_data = pre_condition_data(
         labeled_data, non_negative=non_negative)
 
@@ -59,26 +60,46 @@ def main():
     params = read_params(args.config_file)
 
     classifier_args = params['classifier_params']['classifier_args']
-    hist = not params['use_psix']
     non_negative = params['non_negative']
-    if params['classifier_params']['type'] != "":
-        labeled_data = get_labeled_data(params['prefix'], params)
+    if params['classifier_params']['type'] == "":
+        raise IOError("No prefix/classifier type specified! Aborting. k bie!")
+        return
+
+    cv_scores = []
+    train_scores = []
+    for prefix in params['prefix']:
+        print("prefix: " + prefix)
+        labeled_data = get_labeled_data(prefix, params)
         try:
-            training_data, test_data, cv_data = process_data(labeled_data)
+            training_data, test_data, cv_data = process_data(labeled_data, params['use_psix'])
             print("in")
             classifier_obj = get_classifier(params, training_data)
 
             cv_scores_a = classifier_obj.get_score(cv_data)
             train_scores_a = classifier_obj.get_score(training_data)
             print("CV Score: ", cv_scores_a, "Train: ", train_scores_a)
+            
+            cv_scores.append(cv_scores_a)
+            train_scores.append(train_scores_a)
         except:
             for label_data in labeled_data:
-                training_data, test_data, cv_data = process_data(labeled_data)
+                training_data, test_data, cv_data = process_data(labeled_data, params['usse_psix'])
                 classifier_obj = get_classifier(params, training_data)
 
                 cv_scores_a = classifier_obj.get_score(cv_data)
                 train_scores_a = classifier_obj.score(training_data)
                 print("CV Score: ", cv_scores_a, "Train: ", train_scores_a)
+
+        aug = "no_aug"
+        if params["aug_all"]:
+            aug = "aug_all"
+        elif params["aug_class"]:
+            aug = "aug_%s" % params["aug_class"]
+        filename = "%s-%s-%s" % (
+            params['prefix'][0].split('/')[1], 
+            "hist" if not params["use_psix"] else "psix", 
+            aug)
+        np.save(filename, {"prefixes": params['prefix'], "train_scores": train_scores, "val_scores": cv_scores})
 
         # cs = l1_min_c(
         #     training_data['X'], training_data['labels'], loss='log') * np.logspace(0, 7, 16)
@@ -132,8 +153,6 @@ def main():
 
         # plt.show()
 
-    else:
-        raise IOError("No prefix/classifier type specified! Aborting. k bie!")
 
 
 if __name__ == "__main__":

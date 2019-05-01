@@ -56,6 +56,7 @@ def split_data_into_test_and_training(data, batch_size=15):
 
 def get_data_from_label(path_prefix, hists=False):
     label_file = path_prefix + "gt_labels.mat"
+    # label_file = "logs/baseline-" + "gt_labels.mat"
     data_file = path_prefix + "psix.mat"
     if hists:
         data_file = path_prefix + "hists.mat"

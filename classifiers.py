@@ -21,9 +21,9 @@ class Classifiers:
                 penalty=self.args['regularization'],
                 random_state=0,
                 solver=self.args['solver'],
-                multi_class='multinomial',
+                multi_class='ovr',
                 max_iter=self.args['max_iter'],
-                warm_start=True)
+                warm_start=self.args['warm_start'])
 
         elif self.classifier_type == "gnb":
             self.classifier = naive_bayes.GaussianNB()

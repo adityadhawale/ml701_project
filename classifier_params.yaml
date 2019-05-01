@@ -8,12 +8,16 @@ use_psix: True
 aug_all: False
 aug_class: -1
 non_negative: False
-prefix: logs/baseline-
+prefix: ["logs/words-300-", "logs/words-450-", "logs/baseline-", "logs/words-800-", "logs/w-900-", "logs/words-1200-"]
+# prefix: ["logs/fewer-hists-2-", "logs/baseline-", "logs/more-hists-2_4_8-"]
+# prefix: ["logs/baseline-"]
 
 classifier_params:
-  type: lin_svm #logistic_regression, gnb, multi_nb, lin_svm
+  type: logistic_regression #logistic_regression, gnb, multi_nb, lin_svm
   classifier_args:
     regularization: l2
     solver: lbfgs
-    C: 0.41
-    gamma: 0.1
+    C: 1
+    # gamma: 0.1
+    warm_start: False
+    max_iter: 1000

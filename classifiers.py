@@ -19,8 +19,8 @@ class Classifiers:
             self.classifier = linear_model.LogisticRegression(
                 penalty=self.args['regularization'],
                 random_state=0,
-                solver=self.args['solver'], 
-                multi_class='multinomial', 
+                solver=self.args['solver'],
+                multi_class='multinomial',
                 max_iter=self.args['max_iter'],
                 warm_start=True)
 
@@ -32,8 +32,8 @@ class Classifiers:
             #     random_state=0, tol=1e-5, verbose=True)
             # self.classifier = linear_model.SGDClassifier(
             #     max_iter=1000, tol=1e-5, verbose=1)
-            self.classifier = svm.SVC(
-                kernel='linear', verbose=1, random_state=1)
+            self.classifier = svm.LinearSVC(
+                penalty='l2', loss='squared_hinge', dual=True, C=0.04641, tol=1e-4)
 
         elif self.classifier_type == "multi_nb":
             self.classifier = naive_bayes.MultinomialNB()

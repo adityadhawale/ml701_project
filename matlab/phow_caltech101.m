@@ -57,9 +57,9 @@ conf.autoDownloadData = true ;
 conf.numTrain = 15 ;
 conf.numTest = 15 ;
 conf.numClasses = 102 ;
-conf.numWords = 600 ;
-conf.numSpatialX = [2 4] ;
-conf.numSpatialY = [2 4] ;
+conf.numWords = 600;
+conf.numSpatialX = [2] ;
+conf.numSpatialY = [2] ;
 conf.quantizer = 'kdtree' ;
 conf.svm.C = 10 ;
 
@@ -70,8 +70,8 @@ conf.svm.solver = 'sdca' ;
 conf.svm.biasMultiplier = 1 ;
 conf.phowOpts = {'Step', 3} ;
 conf.clobber = false ;
-conf.tinyProblem = true ;
-conf.prefix = 'baseline' ;
+conf.tinyProblem = false ;
+conf.prefix = 'fewer-hists-2' ;
 conf.randSeed = 1 ;
 
 if conf.tinyProblem
@@ -87,6 +87,7 @@ conf.vocabPath = fullfile(conf.dataDir, [conf.prefix '-vocab.mat']) ;
 conf.histPath = fullfile(conf.dataDir, [conf.prefix '-hists.mat']) ;
 conf.modelPath = fullfile(conf.dataDir, [conf.prefix '-model.mat']) ;
 conf.resultPath = fullfile(conf.dataDir, [conf.prefix '-result']) ;
+conf.psixPath = fullfile(conf.dataDir, [conf.prefix '-psix']) ;
 
 randn('state',conf.randSeed) ;
 rand('state',conf.randSeed) ;
@@ -201,6 +202,7 @@ end
 % --------------------------------------------------------------------
 
 psix = vl_homkermap(hists, 1, 'kchi2', 'gamma', .5) ;
+save(conf.psixPath, 'psix');
 
 % --------------------------------------------------------------------
 %                                                            Train SVM
@@ -271,6 +273,42 @@ function im = standarizeImage(im)
 % -------------------------------------------------------------------------
 
 im = im2single(im) ;
+
+im1 = imrotate(im,-20);
+if size(im1,1) > 480, im1 = imresize(im1, [480 NaN]) ;end
+
+im2 = imrotate(im,20);
+if size(im2,1) > 480, im2 = imresize(im2, [480 NaN]) ;end
+
+im3 = imrotate(im,-40);
+if size(im3,1) > 480, im3 = imresize(im3, [480 NaN]) ;end
+
+im4 = imrotate(im4,40);
+if size(im4,1) > 480, im4 = imresize(im4, [480 NaN]) ;end
+
+im5 = imresize(im, .5);
+if size(im5,1) > 480, im5 = imresize(im5, [480 NaN]) ;end
+
+im6 = imresize(im, 2);
+if size(im6,1) > 480, im6 = imresize(im6, [480 NaN]) ;end
+
+im7 = imresize(im, 1.5);
+if size(im7,1) > 480, im7 = imresize(im7, [480 NaN]) ;end
+
+im8 = flipdim(im,1);
+if size(im8,1) > 480, im8 = imresize(im8, [480 NaN]) ;end
+
+im9 = flipdim(im,2);
+if size(im9,1) > 480, im9 = imresize(im9, [480 NaN]) ;end
+
+im10 = flipdim(im,1);
+im10 = flipdim(im,2);
+if size(im10,1) > 480, im10 = imresize(im10, [480 NaN]) ;end
+
+multi = cat(3,im,im2,im3,im4,im5,im6,im7,im8,im9, im10);
+montage(multi);
+
+
 if size(im,1) > 480, im = imresize(im, [480 NaN]) ; end
 
 % -------------------------------------------------------------------------

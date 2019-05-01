@@ -62,39 +62,50 @@ def get_data_from_label(path_prefix, hists=False):
         data_file = path_prefix + "hists.mat"
 
     X = np.array(get_matlab_matrix(data_file), dtype=np.float)
-    labels = np.array(get_matlab_matrix(label_file), dtype=np.int64).flatten()
+    try:
+        label_file = "logs/baseline-gt_labels.mat"
+        labels = np.array(get_matlab_matrix(label_file),
+                          dtype=np.int64).flatten()
+    except:
+        label_file = "logs/baseline-gt_labels.mat"
+        labels = np.array(get_matlab_matrix(label_file),
+                          dtype=np.int64).flatten()
 
     return X, labels
 
 
-def get_labeled_data(path_prefix, params):
+def get_labeled_data(path_prefix, params, aug_type=None):
     # Get the vanilla data
     hists = not params['use_psix']
     training_data = dict()
     X, labels = get_data_from_label(path_prefix, hists)
 
-    aug_list = ['logs/baseline-20-l-', 'logs/baseline-20-r-', 'logs/baseline-40-l-',
-                'logs/baseline-40-r-', 'logs/zoom-.5-', 'logs/zoom-1.5-', 'logs/zoom-2-']
+    if (aug_type == None):
+        aug_list = ['logs/baseline-20-l-', 'logs/baseline-20-r-', 'logs/baseline-40-l-',
+                    'logs/baseline-40-r-', 'logs/zoom-.5-', 'logs/zoom-1.5-', 'logs/zoom-2-']
+    else:
+        aug_list = [aug_type]
 
     if params['aug_all']:
-        training_data = []
         for aug in aug_list:
-            # aug_X, aug_label = get_data_from_label(aug, hists)
+            aug_X, aug_label = get_data_from_label(aug, hists)
             # X, labels = get_data_from_label(aug, hists)
             X = np.vstack((X, aug_X))
             labels = np.hstack((labels, aug_label))
 
-    elif params['aug_class'] > -1:
+    elif len(params['aug_class']) > 0:
         for aug in aug_list:
             aug_X, aug_label = get_data_from_label(aug)
             # X, labels = get_data_from_label(aug)
 
-        for i in range(aug_label.shape[0]):
-            # if of target class, add its augmentations to the data set
-            if aug_label[i] is aug_class:
-                print("Augmenting data for class " + i)
-                X = np.vstack((X, aug_X[i]))
-                labels = np.vstack((labels, aug_label[i]))
+        for aug_class in params['aug_class']:
+            # aug_class = params['aug_class'][t]
+            for i in range(aug_label.shape[0]):
+                # if of target class, add its augmentations to the data set
+                if aug_label[i] == aug_class:
+                    print("Augmenting data for class ", i)
+                    X = np.vstack((X, aug_X[i]))
+                    labels = np.hstack((labels, aug_label[i]))
 
     training_data['X'] = X
     training_data['labels'] = labels

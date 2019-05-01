@@ -59,3 +59,53 @@ def plot_precision_recall_curve(y_score, true_labels):
 
 def plot_loss_over_training_iterations():
     pass
+
+
+def plot_tsne(X, y):
+    from sklearn.manifold import TSNE
+    import matplotlib as mpl
+    sns.set(context='poster', style='whitegrid')
+    sns.set_style("whitegrid", {'axes.grid': False})
+
+    comps = np.max(y) - 1
+    tsne = TSNE(n_components=2, random_state=0)
+    x_2d = tsne.fit_transform(X)
+
+    cmap = plt.cm.jet
+    cmaplist = [cmap(i) for i in range(cmap.N)]
+    cmap = cmap.from_list('Custom cmap', cmaplist, cmap.N)
+
+    bounds = np.linspace(0, comps, comps + 1)
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+
+    plt.figure(dpi=180)
+    plt.scatter(x_2d[:, 0], x_2d[:, 1], c=y - 1, s=100, cmap=cmap, norm=norm)
+    plt.xlabel("X1")
+    plt.ylabel("X2")
+    # sns.despine()
+    plt.show()
+
+
+def plot_words_v_accuracy(x, scores, labels):
+    fig = plt.figure(dpi=200)
+    plt.plot(x, scores[0], lw=3, label=labels[0])
+    plt.plot(x, scores[1], lw=3, label=labels[1])
+    leg = plt.legend()
+    leg.draggable()
+    plt.xlabel("Words")
+    plt.ylabel("Accuracy")
+
+    plt.show()
+
+
+def plot_hists_v_accuracy(x, scores, labels):
+    fig = plt.figure(dpi=200)
+    plt.plot(x, scores[0], lw=3, label=labels[0])
+    plt.plot(x, scores[1], lw=3, label=labels[1])
+    leg = plt.legend()
+    leg.draggable()
+    plt.xlabel("Tiling")
+    plt.xticks(x, ["coarse", 'baseline', 'finer'])
+    plt.ylabel("Accuracy")
+
+    plt.show()

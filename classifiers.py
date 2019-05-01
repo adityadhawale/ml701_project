@@ -34,7 +34,15 @@ class Classifiers:
             # self.classifier = linear_model.SGDClassifier(
             #     max_iter=1000, tol=1e-5, verbose=1)
             self.classifier = svm.LinearSVC(
-                penalty='l2', loss='squared_hinge', dual=True, C=0.04641, tol=1e-4)
+                penalty=self.args['regularization'], loss='squared_hinge', dual=True, C=self.args['C'], tol=1e-4, max_iter=2000)
+
+        elif self.classifier_type == "rbf_svm":
+            self.classifier = svm.SVC(
+                C=self.args['C'], kernel='rbf', gamma='auto')
+
+        elif self.classifier_type == 'chi_svm':
+            self.classifier = svm.LinearSVC(
+                penalty=self.args['regularization'], loss='squared_hinge', dual=True, C=self.args['C'], tol=1e-4, max_iter=2000)
 
         elif self.classifier_type == "multi_nb":
             self.classifier = naive_bayes.MultinomialNB()
@@ -45,8 +53,12 @@ class Classifiers:
     def get_score(self, data):
         return self.classifier.score(data['X'], data['labels'])
 
-    def save_model(self, prefix):
-        filename = prefix + self.classifier_type+"_trained.joblib"
+    def save_model(self, prefix, use_psix, words=600):
+        feat_type = 'hists'
+        if use_psix:
+            feat_type = 'psix'
+        filename = prefix + self.classifier_type + "_" + \
+            feat_type + "_words_" + str(words) + "_trained.joblib"
         dump(self.classifier, filename)
 
     def load_model(self, prefix):

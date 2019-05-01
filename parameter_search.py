@@ -12,42 +12,56 @@ from sklearn.metrics.pairwise import chi2_kernel
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--classifier_type", default="lin_svm", type=str)
-    parser.add_argument("--prefix", default="logs/baseline-", type=str)
-    parser.add_argument("--aug_all", default="False", type=bool)
-    parser.add_argument("--aug_class", default="-1", type=int)
-
+    parser.add_argument(
+        '--config_file', default='classifier_params.yaml', type=str)
     args = parser.parse_args()
+    params = read_params(args.config_file)
+    # parser.add_argument("--classifier_type", default="lin_svm", type=str)
+    # parser.add_argument("--prefix", default="logs/baseline-", type=str)
+    # parser.add_argument("--aug_all", default="False", type=bool)
+    # parser.add_argument("--aug_class", default="-1", type=int)
 
-    if args.classifier_type:
-        labeled_data = get_labeled_data(
-            args.prefix, False, False, -1)
-        training_data, test_data, cv_data = process_data(labeled_data, True)
+    # args = parser.parse_args()
 
-        param_grid = {'C': [1, 10, 100, 1000], 'gamma': [
-            1, 0.1, 0.001, 0.0001], 'kernel': ['linear', 'rbf']}
-        # param_grid = {'C': [1, 10, 100, 1000]}
-        grid = GridSearchCV(svm.SVC(tol=1e-4),
-                            param_grid, refit=True, verbose=2)
-        grid.fit(training_data['X'], training_data['labels'])
-        predict = grid.predict(cv_data['X'])
+    # if args.classifier_type:
+    #     labeled_data = get_labeled_data(
+    #         args.prefix, False, False, -1)
+    #     training_data, test_data, cv_data = process_data(labeled_data, True)
 
-        print(classification_report(cv_data['labels'], predict))
-        print(confusion_matrix(cv_data['labels'], predict))
+    #     param_grid = {'C': [1, 10, 100, 1000], 'gamma': [
+    #         1, 0.1, 0.001, 0.0001], 'kernel': ['linear', 'rbf']}
+    #     # param_grid = {'C': [1, 10, 100, 1000]}
+    #     grid = GridSearchCV(svm.SVC(tol=1e-4),
+    #                         param_grid, refit=True, verbose=2)
+    #     grid.fit(training_data['X'], training_data['labels'])
+    #     predict = grid.predict(cv_data['X'])
 
-        param_grid = {'C': [1, 10, 100, 1000], 'gamma': [
-            1, 0.1, 0.001, 0.0001]}
-        # param_grid = {'C': [1, 10, 100, 1000]}
-        K_train = chi2_kernel(training_data['X'], gamma=0.5)
-        K_cv = chi2_kernel(cv_data['X'], gamma=0.5)
-        K_test = chi2_kernel(test_data['X'], gamma=0.5)
+    #     print(classification_report(cv_data['labels'], predict))
+    #     print(confusion_matrix(cv_data['labels'], predict))
 
-        grid_2 = GridSearchCV(svm.SVC(tol=1e-4, kernel='precomputed'),
-                              param_grid, refit=True, verbose=2)
-        grid_2.fit(K_train, training_data['labels'])
-        predict = grid_2.predict(K_cv)
-        print(classification_report(cv_data['labels'], predict))
-        print(confusion_matrix(cv_data['labels'], predict))
+    #     param_grid = {'C': [1, 10, 100, 1000], 'gamma': [
+    #         1, 0.1, 0.001, 0.0001]}
+    #     # param_grid = {'C': [1, 10, 100, 1000]}
+    #     K_train = chi2_kernel(training_data['X'], gamma=0.5)
+    #     K_cv = chi2_kernel(cv_data['X'], gamma=0.5)
+    #     K_test = chi2_kernel(test_data['X'], gamma=0.5)
+
+    #     grid_2 = GridSearchCV(svm.SVC(tol=1e-4, kernel='precomputed'),
+    #                           param_grid, refit=True, verbose=2)
+    #     grid_2.fit(K_train, training_data['labels'])
+    #     predict = grid_2.predict(K_cv)
+    #     print(classification_report(cv_data['labels'], predict))
+    #     print(confusion_matrix(cv_data['labels'], predict))
+
+    labeled_data = get_labeled_data(params['prefix'], params)
+    training_data, test_data, cv_data = process_data(labeled_data, params)
+    css = np.logspace(-1.5, 0.5, 7)
+    for cs in css:
+        classifier = svm.LinearSVC(
+            penalty='l2', loss='squared_hinge', dual=True, tol=1e-2, C=cs, max_iter=500)
+        classifier.fit(training_data['X'], training_data['labels'])
+        print("CV Score: ", classifier.score(cv_data['X'], cv_data['labels']), "Train: ", classifier.score(
+            training_data['X'], training_data['labels']), "C: ", cs)
 
 
 if __name__ == "__main__":

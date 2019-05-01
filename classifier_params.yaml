@@ -6,14 +6,21 @@ pre_trained: False
 save_model: False
 use_psix: True
 aug_all: False
-aug_class: -1
+aug_individual: False
+# aug_class: [80, 45, 61, 96]
+aug_class: []
 non_negative: False
 prefix: ["logs/words-300-", "logs/words-450-", "logs/baseline-", "logs/words-800-", "logs/w-900-", "logs/words-1200-"]
 # prefix: ["logs/fewer-hists-2-", "logs/baseline-", "logs/more-hists-2_4_8-"]
 # prefix: ["logs/baseline-"]
 
+feature_deviation_thresh: 0.000001 #0.035
+# feature_deviation_thresh: 0.025 #0.035
+
+plot_tsne: False
+
 classifier_params:
-  type: logistic_regression #logistic_regression, gnb, multi_nb, lin_svm
+  type: chi_svm #logistic_regression, gnb, multi_nb, lin_svm
   classifier_args:
     regularization: l2
     solver: lbfgs

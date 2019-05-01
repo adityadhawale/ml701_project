@@ -1,0 +1,19 @@
+tiny_problem: True
+num_classes_tiny: 10
+classes_tiny: [1, 10, 20, 25, 30, 40, 55, 68, 75, 93]
+
+pre_trained: False
+save_model: False
+use_psix: True
+aug_all: False
+aug_class: -1
+non_negative: False
+prefix: logs/baseline-
+
+classifier_params:
+  type: lin_svm #logistic_regression, gnb, multi_nb, lin_svm
+  classifier_args:
+    regularization: l2
+    solver: lbfgs
+    C: 0.41
+    gamma: 0.1

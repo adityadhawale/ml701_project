@@ -7,6 +7,7 @@ from joblib import dump, load
 from time import time
 import matplotlib.pyplot as plt
 
+
 class Classifiers:
     def __init__(self, classifier_type, classifier_args):
         self.classifier_type = classifier_type

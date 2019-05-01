@@ -66,31 +66,34 @@ def get_data_from_label(path_prefix, hists=False):
     return X, labels
 
 
-def get_labeled_data(path_prefix, hists=False, aug_all=False, aug_class=-1):
+def get_labeled_data(path_prefix, params):
     # Get the vanilla data
+    hists = not params['use_psix']
     training_data = dict()
     X, labels = get_data_from_label(path_prefix, hists)
 
     aug_list = ['logs/baseline-20-l-', 'logs/baseline-20-r-', 'logs/baseline-40-l-',
                 'logs/baseline-40-r-', 'logs/zoom-.5-', 'logs/zoom-1.5-', 'logs/zoom-2-']
 
-    if aug_all:
+    if params['aug_all']:
+        training_data = []
         for aug in aug_list:
-            aug_X, aug_label = get_data_from_label(aug, hists)
+            # aug_X, aug_label = get_data_from_label(aug, hists)
+            # X, labels = get_data_from_label(aug, hists)
             X = np.vstack((X, aug_X))
-            labels = np.vstack((labels, aug_label))
-            print(X.shape, labels.shape)
+            labels = np.hstack((labels, aug_label))
 
-    elif aug_class > -1:
+    elif params['aug_class'] > -1:
         for aug in aug_list:
             aug_X, aug_label = get_data_from_label(aug)
+            # X, labels = get_data_from_label(aug)
 
-            for i in range(aug_label.shape[0]):
-                # if of target class, add its augmentations to the data set
-                if aug_label[i] is aug_class:
-                    print("Augmenting data for class " + i)
-                    X = np.vstack((X, aug_X[i]))
-                    labels = np.vstack((labels, aug_label[i]))
+        for i in range(aug_label.shape[0]):
+            # if of target class, add its augmentations to the data set
+            if aug_label[i] is aug_class:
+                print("Augmenting data for class " + i)
+                X = np.vstack((X, aug_X[i]))
+                labels = np.vstack((labels, aug_label[i]))
 
     training_data['X'] = X
     training_data['labels'] = labels
@@ -103,10 +106,42 @@ def get_labeled_data(path_prefix, hists=False, aug_all=False, aug_class=-1):
     except:
         pass
 
+    if params['tiny_problem']:
+        training_data = get_tiny_data(training_data, params)
+
     assert training_data['X'].shape[0] == training_data['labels'].shape[0], \
         "Unequal number of data points and labels"
 
     return training_data
+
+
+def get_tiny_data(data, params):
+    tiny_data = dict()
+    if (len(params['classes_tiny']) != 0):
+        for c in range(len(params['classes_tiny'])):
+            flags = data['labels'] == params['classes_tiny'][c]
+            X = data['X'][flags, :]
+            labels = data['labels'][flags]
+            try:
+                tiny_data['X'] = np.vstack((tiny_data['X'], X))
+                tiny_data['labels'] = np.hstack((tiny_data['labels'], labels))
+            except:
+                tiny_data['X'] = X
+                tiny_data['labels'] = labels
+
+    else:
+        for c in range(params['num_classes_tiny']):
+            flags = data['labels'] == params['classes_tiny'][c]
+            X = data['X'][flags, :]
+            labels = data['labels'][flags]
+            try:
+                tiny_data['X'] = np.vstack((tiny_data['X'], X))
+                tiny_data['labels'] = np.hstack(
+                    (tiny_data['labels'], labels))
+            except:
+                tiny_data['X'] = X
+                tiny_data['labels'] = labels
+    return tiny_data
 
 
 def split_training_into_train_and_cv(data, percentage_split=0.1, random=True):
